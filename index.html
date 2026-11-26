@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GROOVE — Магазин виниловых пластинок</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#f4ede4;
+    --cream-2:#ece2d3;
+    --ink:#1a1410;
+    --ink-soft:#2d241c;
+    --terracotta:#c4452a;
+    --ochre:#d4a574;
+    --muted:#7a6a58;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+    line-height:1.5;
+  }
+  /* Зернистость */
+  body::before{
+    content:'';
+    position:fixed;inset:0;
+    pointer-events:none;
+    z-index:1000;
+    opacity:.06;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  h1,h2,h3,h4{font-family:'Fraunces',serif;font-weight:600;letter-spacing:-.02em}
+  a{color:inherit;text-decoration:none}
+  .container{max-width:1320px;margin:0 auto;padding:0 32px}
+
+  /* NAV */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    padding:22px 0;
+    backdrop-filter:blur(12px);
+    background:rgba(244,237,228,.7);
+    border-bottom:1px solid rgba(26,20,16,.06);
+  }
+  nav .container{display:flex;align-items:center;justify-content:space-between}
+  .logo{
+    font-family:'Fraunces',serif;
+    font-weight:700;font-size:24px;
+    letter-spacing:.08em;
+    display:flex;align-items:center;gap:10px;
+  }
+  .logo-dot{width:10px;height:10px;border-radius:50%;background:var(--terracotta)}
+  .nav-links{display:flex;gap:38px;font-size:14px;font-weight:500}
+  .nav-links a{position:relative;transition:color .3s}
+  .nav-links a::after{
+    content:'';position:absolute;left:0;bottom:-4px;
+    width:0;height:1px;background:var(--terracotta);
+    transition:width .3s;
+  }
+  .nav-links a:hover{color:var(--terracotta)}
+  .nav-links a:hover::after{width:100%}
+  .nav-cta{
+    padding:10px 22px;border:1px solid var(--ink);
+    border-radius:100px;font-size:13px;font-weight:500;
+    transition:all .3s;
+  }
+  .nav-cta:hover{background:var(--ink);color:var(--cream)}
+
+  /* HERO */
+  .hero{
+    padding:160px 0 100px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-grid{
+    display:grid;grid-template-columns:1.1fr 1fr;
+    gap:60px;align-items:center;
+  }
+  .hero-tag{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:8px 16px;border-radius:100px;
+    background:rgba(196,69,42,.08);
+    color:var(--terracotta);
+    font-size:12px;font-weight:500;letter-spacing:.1em;
+    text-transform:uppercase;
+    margin-bottom:28px;
+  }
+  .hero-tag::before{
+    content:'';width:6px;height:6px;border-radius:50%;
+    background:var(--terracotta);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:1;transform:scale(1)}
+    50%{opacity:.5;transform:scale(1.3)}
+  }
+  .hero h1{
+    font-size:clamp(48px,7vw,104px);
+    line-height:.95;
+    margin-bottom:32px;
+  }
+  .hero h1 em{
+    font-style:italic;font-weight:300;
+    color:var(--terracotta);
+  }
+  .hero h1 .stroke{
+    -webkit-text-stroke:1.5px var(--ink);
+    color:transparent;
+    font-style:italic;font-weight:300;
+  }
+  .hero p{
+    font-size:18px;color:var(--ink-soft);
+    max-width:480px;margin-bottom:40px;
+  }
+  .hero-actions{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+  .btn-primary{
+    padding:18px 36px;background:var(--ink);color:var(--cream);
+    border-radius:100px;font-weight:500;font-size:15px;
+    display:inline-flex;align-items:center;gap:10px;
+    transition:all .4s cubic-bezier(.2,.8,.2,1);
+    border:none;cursor:pointer;
+  }
+  .btn-primary:hover{background:var(--terracotta);transform:translateY(-2px);box-shadow:0 20px 40px -10px rgba(196,69,42,.4)}
+  .btn-primary svg{transition:transform .3s}
+  .btn-primary:hover svg{transform:translateX(4px)}
+  .btn-ghost{
+    padding:18px 36px;border:1px solid rgba(26,20,16,.2);
+    border-radius:100px;font-weight:500;font-size:15px;
+    transition:all .3s;
+  }
+  .btn-ghost:hover{border-color:var(--ink)}
+
+  .hero-stats{
+    display:flex;gap:48px;margin-top:60px;
+    padding-top:40px;border-top:1px solid rgba(26,20,16,.1);
+  }
+  .stat-num{font-family:'Fraunces',serif;font-size:36px;font-weight:600;line-height:1}
+  .stat-label{font-size:13px;color:var(--muted);margin-top:6px}
+
+  /* Пластинка */
+  .vinyl-stage{
+    position:relative;
+    aspect-ratio:1;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .vinyl-stage::before{
+    content:'';position:absolute;
+    width:120%;height:120%;
+    background:radial-gradient(circle,rgba(212,165,116,.3) 0%,transparent 60%);
+    filter:blur(40px);
+    z-index:0;
+  }
+  .vinyl{
+    position:relative;width:100%;height:100%;
+    animation:spin 18s linear infinite;
+    z-index:1;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .vinyl svg{width:100%;height:100%;display:block}
+  .tonearm{
+    position:absolute;top:8%;right:-5%;
+    width:55%;z-index:2;
+    transform-origin:top right;
+    animation:arm 8s ease-in-out infinite alternate;
+  }
+  @keyframes arm{
+    0%{transform:rotate(-8deg)}
+    100%{transform:rotate(2deg)}
+  }
+  .floating-tag{
+    position:absolute;
+    background:var(--cream);
+    padding:14px 20px;border-radius:14px;
+    box-shadow:0 20px 50px -15px rgba(26,20,16,.2);
+    display:flex;align-items:center;gap:12px;
+    font-size:13px;font-weight:500;
+    z-index:3;
+  }
+  .floating-tag.top{top:12%;left:-8%;animation:float 6s ease-in-out infinite}
+  .floating-tag.bot{bottom:14%;right:-4%;animation:float 6s ease-in-out infinite reverse}
+  @keyframes float{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-12px)}
+  }
+  .tag-icon{
+    width:36px;height:36px;border-radius:50%;
+    background:var(--ochre);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);
+  }
+  .floating-tag.bot .tag-icon{background:var(--terracotta);color:var(--cream)}
+
+  /* MARQUEE */
+  .marquee{
+    padding:40px 0;
+    border-top:1px solid rgba(26,20,16,.08);
+    border-bottom:1px solid rgba(26,20,16,.08);
+    overflow:hidden;
+    background:var(--cream-2);
+  }
+  .marquee-track{
+    display:flex;gap:60px;
+    animation:scroll 30s linear infinite;
+    white-space:nowrap;
+  }
+  .marquee span{
+    font-family:'Fraunces',serif;
+    font-size:28px;font-style:italic;
+    color:var(--ink-soft);
+    display:flex;align-items:center;gap:60px;
+  }
+  .marquee span::after{
+    content:'✦';color:var(--terracotta);font-style:normal;
+  }
+  @keyframes scroll{
+    to{transform:translateX(-50%)}
+  }
+
+  /* SECTION HEADER */
+  section{padding:120px 0}
+  .section-head{
+    display:flex;justify-content:space-between;align-items:end;
+    margin-bottom:60px;gap:40px;flex-wrap:wrap;
+  }
+  .section-label{
+    font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--terracotta);font-weight:500;margin-bottom:16px;
+  }
+  .section-head h2{
+    font-size:clamp(36px,5vw,64px);
+    line-height:1;max-width:600px;
+  }
+  .section-head h2 em{font-style:italic;font-weight:300;color:var(--terracotta)}
+  .section-head p{max-width:400px;color:var(--ink-soft)}
+
+  /* GENRES */
+  .genres{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:20px;
+  }
+  .genre-card{
+    position:relative;
+    padding:36px 28px;
+    border-radius:24px;
+    background:var(--cream-2);
+    overflow:hidden;
+    transition:all .5s cubic-bezier(.2,.8,.2,1);
+    cursor:pointer;
+    min-height:280px;
+    display:flex;flex-direction:column;justify-content:space-between;
+  }
+  .genre-card:hover{
+    background:var(--ink);color:var(--cream);
+    transform:translateY(-6px);
+  }
+  .genre-card::before{
+    content:'';position:absolute;
+    width:200px;height:200px;border-radius:50%;
+    background:radial-gradient(circle,var(--ochre) 0%,transparent 70%);
+    top:-100px;right:-100px;opacity:.3;
+    transition:all .5s;
+  }
+  .genre-card:hover::before{transform:scale(1.5);opacity:.5}
+  .genre-num{
+    font-family:'Fraunces',serif;
+    font-size:14px;color:var(--muted);
+    font-style:italic;
+  }
+  .genre-card:hover .genre-num{color:var(--ochre)}
+  .genre-name{
+    font-family:'Fraunces',serif;
+    font-size:32px;font-weight:500;line-height:1;
+    margin-top:auto;
+  }
+  .genre-arrow{
+    position:absolute;top:28px;right:28px;
+    width:40px;height:40px;border-radius:50%;
+    background:var(--ink);color:var(--cream);
+    display:flex;align-items:center;justify-content:center;
+    transition:all .4s;
+  }
+  .genre-card:hover .genre-arrow{
+    background:var(--terracotta);transform:rotate(-45deg);
+  }
+
+  /* RELEASES */
+  .releases-section{background:var(--ink);color:var(--cream);border-radius:40px;margin:0 24px;padding:100px 0}
+  .releases-section .section-label{color:var(--ochre)}
+  .releases-section .section-head h2 em{color:var(--ochre)}
+  .releases-section .section-head p{color:rgba(244,237,228,.6)}
+  .releases{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:28px;
+  }
+  .release{
+    cursor:pointer;
+    transition:transform .4s;
+  }
+  .release:hover{transform:translateY(-8px)}
+  .release-cover{
+    position:relative;aspect-ratio:1;
+    border-radius:16px;overflow:hidden;
+    margin-bottom:20px;
+    background:var(--ink-soft);
+  }
+  .release-cover .cover-art{
+    width:100%;height:100%;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;overflow:hidden;
+  }
+  .cover-art-1{background:linear-gradient(135deg,#c4452a 0%,#7a2418 100%)}
+  .cover-art-2{background:linear-gradient(135deg,#2d4a3e 0%,#1a2e25 100%)}
+  .cover-art-3{background:linear-gradient(135deg,#d4a574 0%,#8a6842 100%)}
+  .cover-art-4{background:linear-gradient(135deg,#3a3a5c 0%,#1e1e32 100%)}
+  .cover-art-5{background:linear-gradient(135deg,#8b3a62 0%,#4a1e36 100%)}
+  .cover-art-6{background:linear-gradient(135deg,#c9a961 0%,#6b5a2e 100%)}
+  .cover-art-7{background:linear-gradient(135deg,#2a4858 0%,#142832 100%)}
+  .cover-art-8{background:linear-gradient(135deg,#a85536 0%,#5c2c1c 100%)}
+  .cover-title{
+    font-family:'Fraunces',serif;
+    font-size:28px;font-weight:700;
+    color:rgba(255,255,255,.9);
+    text-align:center;padding:20px;
+    line-height:1;z-index:2;
+    text-shadow:0 2px 20px rgba(0,0,0,.3);
+  }
+  .cover-title em{font-style:italic;font-weight:300;display:block;font-size:18px;opacity:.8;margin-top:8px}
+  .release-cover::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,.4));
+  }
+  .release-vinyl{
+    position:absolute;top:10%;right:-30%;
+    width:80%;aspect-ratio:1;
+    transition:right .5s cubic-bezier(.2,.8,.2,1);
+    z-index:1;
+  }
+  .release:hover .release-vinyl{right:-10%}
+  .release-info{display:flex;justify-content:space-between;align-items:start;gap:12px}
+  .release-title{font-family:'Fraunces',serif;font-size:20px;font-weight:500;line-height:1.2}
+  .release-artist{font-size:13px;color:rgba(244,237,228,.5);margin-top:4px}
+  .release-price{font-family:'Fraunces',serif;font-size:20px;font-weight:600;white-space:nowrap}
+  .release-meta{
+    display:flex;gap:8px;margin-top:12px;
+  }
+  .release-meta span{
+    font-size:11px;padding:4px 10px;
+    border-radius:100px;
+    background:rgba(244,237,228,.08);
+    color:rgba(244,237,228,.7);
+    letter-spacing:.05em;
+  }
+
+  /* HOW IT WORKS */
+  .steps{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:32px;
+  }
+  .step{
+    padding:40px 36px;
+    border:1px solid rgba(26,20,16,.1);
+    border-radius:24px;
+    position:relative;
+    transition:all .4s;
+  }
+  .step:hover{
+    border-color:var(--ink);
+    background:var(--cream-2);
+    transform:translateY(-4px);
+  }
+  .step-num{
+    font-family:'Fraunces',serif;
+    font-size:80px;font-weight:300;
+    font-style:italic;
+    color:var(--terracotta);
+    line-height:1;margin-bottom:24px;
+  }
+  .step h3{font-size:24px;margin-bottom:12px}
+  .step p{color:var(--ink-soft);font-size:15px}
+
+  /* TESTIMONIALS */
+  .testimonials-section{background:var(--cream-2)}
+  .testimonials{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+  }
+  .testimonial{
+    background:var(--cream);
+    padding:36px;border-radius:24px;
+    position:relative;
+  }
+  .testimonial::before{
+    content:'"';
+    position:absolute;top:10px;right:24px;
+    font-family:'Fraunces',serif;
+    font-size:120px;font-style:italic;
+    color:var(--terracotta);opacity:.15;
+    line-height:1;
+  }
+  .stars{color:var(--terracotta);margin-bottom:20px;font-size:14px;letter-spacing:2px}
+  .testimonial p{
+    font-family:'Fraunces',serif;
+    font-size:18px;line-height:1.5;
+    margin-bottom:28px;font-style:italic;
+    font-weight:400;
+  }
+  .testimonial-author{display:flex;align-items:center;gap:14px}
+  .author-avatar{
+    width:48px;height:48px;border-radius:50%;
+    background:linear-gradient(135deg,var(--ochre),var(--terracotta));
+    display:flex;align-items:center;justify-content:center;
+    color:var(--cream);font-weight:600;
+    font-family:'Fraunces',serif;
+  }
+  .author-name{font-weight:500;font-size:14px}
+  .author-role{font-size:12px;color:var(--muted)}
+
+  /* CTA */
+  .cta-section{padding:120px 0}
+  .cta-box{
+    background:var(--ink);color:var(--cream);
+    border-radius:32px;
+    padding:80px 60px;
+    position:relative;overflow:hidden;
+    text-align:center;
+  }
+  .cta-box::before{
+    content:'';position:absolute;
+    width:600px;height:600px;border-radius:50%;
+    background:radial-gradient(circle,rgba(196,69,42,.3) 0%,transparent 70%);
+    top:-300px;left:50%;transform:translateX(-50%);
+    filter:blur(40px);
+  }
+  .cta-box h2{
+    font-size:clamp(40px,6vw,80px);
+    line-height:1;margin-bottom:24px;
+    position:relative;
+  }
+  .cta-box h2 em{font-style:italic;font-weight:300;color:var(--ochre)}
+  .cta-box p{
+    max-width:500px;margin:0 auto 40px;
+    color:rgba(244,237,228,.7);font-size:17px;
+    position:relative;
+  }
+  .cta-form{
+    display:flex;gap:12px;max-width:480px;margin:0 auto;
+    position:relative;
+  }
+  .cta-form input{
+    flex:1;padding:18px 24px;
+    background:rgba(244,237,228,.08);
+    border:1px solid rgba(244,237,228,.15);
+    border-radius:100px;
+    color:var(--cream);font-size:15px;
+    font-family:inherit;
+    outline:none;transition:all .3s;
+  }
+  .cta-form input::placeholder{color:rgba(244,237,228,.4)}
+  .cta-form input:focus{border-color:var(--ochre);background:rgba(244,237,228,.12)}
+  .cta-form button{
+    padding:18px 32px;background:var(--terracotta);color:var(--cream);
+    border:none;border-radius:100px;font-weight:500;font-size:15px;
+    cursor:pointer;transition:all .3s;font-family:inherit;
+  }
+  .cta-form button:hover{background:var(--ochre);color:var(--ink)}
+
+  /* FOOTER */
+  footer{
+    padding:80px 0 40px;
+    border-top:1px solid rgba(26,20,16,.1);
+  }
+  .footer-grid{
+    display:grid;grid-template-columns:2fr 1fr 1fr 1fr;
+    gap:60px;margin-bottom:60px;
+  }
+  .footer-brand p{
+    color:var(--ink-soft);margin-top:20px;
+    max-width:300px;font-size:14px;
+  }
+  .footer-col h4{
+    font-family:'Inter',sans-serif;
+    font-size:13px;font-weight:600;
+    letter-spacing:.1em;text-transform:uppercase;
+    margin-bottom:20px;
+  }
+  .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+  .footer-col a{font-size:14px;color:var(--ink-soft);transition:color .3s}
+  .footer-col a:hover{color:var(--terracotta)}
+  .footer-bottom{
+    display:flex;justify-content:space-between;align-items:center;
+    padding-top:32px;border-top:1px solid rgba(26,20,16,.08);
+    font-size:13px;color:var(--muted);
+    flex-wrap:wrap;gap:16px;
+  }
+  .socials{display:flex;gap:12px}
+  .socials a{
+    width:40px;height:40px;border-radius:50%;
+    border:1px solid rgba(26,20,16,.15);
+    display:flex;align-items:center;justify-content:center;
+    transition:all .3s;
+  }
+  .socials a:hover{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+
+  /* Reveal animation */
+  .reveal{opacity:0;transform:translateY(30px);transition:all .8s cubic-bezier(.2,.8,.2,1)}
+  .reveal.visible{opacity:1;transform:translateY(0)}
+
+  /* Responsive */
+  @media(max-width:960px){
+    .hero-grid{grid-template-columns:1fr;gap:80px}
+    .genres{grid-template-columns:repeat(2,1fr)}
+    .releases{grid-template-columns:repeat(2,1fr)}
+    .steps{grid-template-columns:1fr}
+    .testimonials{grid-template-columns:1fr}
+    .footer-grid{grid-template-columns:1fr 1fr;gap:40px}
+    .nav-links{display:none}
+    .hero-stats{flex-wrap:wrap;gap:32px}
+    .releases-section{margin:0 16px;padding:60px 0}
+    section{padding:80px 0}
+    .cta-box{padding:60px 30px}
+    .cta-form{flex-direction:column}
+  }
+  @media(max-width:560px){
+    .genres{grid-template-columns:1fr}
+    .releases{grid-template-columns:1fr}
+    .footer-grid{grid-template-columns:1fr}
+    .floating-tag{display:none}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="#" class="logo"><span class="logo-dot"></span>GROOVE</a>
+    <div class="nav-links">
+      <a href="#catalog">Каталог</a>
+      <a href="#genres">Жанры</a>
+      <a href="#new">Новинки</a>
+      <a href="#about">О нас</a>
+      <a href="#contact">Контакты</a>
+    </div>
+    <a href="#" class="nav-cta">Войти</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-text reveal">
+        <div class="hero-tag">Новая коллекция · Осень 2026</div>
+        <h1>Музыка,<br>которую <em>можно</em><br><span class="stroke">потрогать.</span></h1>
+        <p>Коллекция из 12 000 виниловых пластинок — от редких переизданий 60-х до свежих релизов независимых лейблов. Каждая пластинка — история, упакованная в конверт.</p>
+        <div class="hero-actions">
+          <button class="btn-primary">
+            Смотреть каталог
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </button>
+          <a href="#about" class="btn-ghost">Как это работает</a>
+        </div>
+        <div class="hero-stats">
+          <div>
+            <div class="stat-num">12K+</div>
+            <div class="stat-label">пластинок в каталоге</div>
+          </div>
+          <div>
+            <div class="stat-num">340</div>
+            <div class="stat-label">лейблов-партнёров</div>
+          </div>
+          <div>
+            <div class="stat-num">98%</div>
+            <div class="stat-label">довольных клиентов</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vinyl-stage reveal">
+        <div class="vinyl">
+          <svg viewBox="0 0 400 400">
+            <defs>
+              <radialGradient id="vinylGrad" cx="50%" cy="50%">
+                <stop offset="0%" stop-color="#2d241c"/>
+                <stop offset="30%" stop-color="#1a1410"/>
+                <stop offset="100%" stop-color="#0a0705"/>
+              </radialGradient>
+              <radialGradient id="labelGrad" cx="50%" cy="50%">
+                <stop offset="0%" stop-color="#d4a574"/>
+                <stop offset="100%" stop-color="#c4452a"/>
+              </radialGradient>
+            </defs>
+            <circle cx="200" cy="200" r="195" fill="url(#vinylGrad)"/>
+            <!-- бороздки -->
+            <g stroke="#000" stroke-width=".4" fill="none" opacity=".5">
+              <circle cx="200" cy="200" r="180"/>
+              <circle cx="200" cy="200" r="170"/>
+              <circle cx="200" cy="200" r="160"/>
+              <circle cx="200" cy="200" r="150"/>
+              <circle cx="200" cy="200" r="140"/>
+              <circle cx="200" cy="200" r="130"/>
+              <circle cx="200" cy="200" r="120"/>
+              <circle cx="200" cy="200" r="110"/>
+              <circle cx="200" cy="200" r="100"/>
+              <circle cx="200" cy="200" r="90"/>
+            </g>
+            <g stroke="rgba(255,255,255,.04)" stroke-width=".3" fill="none">
+              <circle cx="200" cy="200" r="175"/>
+              <circle cx="200" cy="200" r="165"/>
+              <circle cx="200" cy="200" r="155"/>
+              <circle cx="200" cy="200" r="145"/>
+              <circle cx="200" cy="200" r="135"/>
+              <circle cx="200" cy="200" r="125"/>
+              <circle cx="200" cy="200" r="115"/>
+              <circle cx="200" cy="200" r="105"/>
+              <circle cx="200" cy="200" r="95"/>
+            </g>
+            <!-- блик -->
+            <path d="M 200 20 A 180 180 0 0 1 380 200" stroke="rgba(255,255,255,.08)" stroke-width="40" fill="none"/>
+            <!-- этикетка -->
+            <circle cx="200" cy="200" r="75" fill="url(#labelGrad)"/>
+            <circle cx="200" cy="200" r="75" fill="none" stroke="rgba(0,0,0,.2)" stroke-width="1"/>
+            <text x="200" y="180" text-anchor="middle" fill="#1a1410" font-family="Fraunces, serif" font-size="14" font-weight="700" letter-spacing="2">GROOVE</text>
+            <text x="200" y="200" text-anchor="middle" fill="#1a1410" font-family="Fraunces, serif" font-size="9" font-style="italic">— side A —</text>
+            <text x="200" y="225" text-anchor="middle" fill="#1a1410" font-family="Fraunces, serif" font-size="7" letter-spacing="1">33⅓ RPM · STEREO</text>
+            <circle cx="200" cy="200" r="4" fill="#1a1410"/>
+          </svg>
+        </div>
+        <svg class="tonearm" viewBox="0 0 300 400" fill="none">
+          <circle cx="280" cy="40" r="30" fill="#1a1410"/>
+          <circle cx="280" cy="40" r="12" fill="#2d241c"/>
+          <line x1="280" y1="40" x2="60" y2="340" stroke="#1a1410" stroke-width="6" stroke-linecap="round"/>
+          <rect x="40" y="330" width="50" height="20" rx="4" fill="#1a1410" transform="rotate(-35 65 340)"/>
+          <rect x="30" y="345" width="30" height="6" rx="1" fill="#c4452a" transform="rotate(-35 45 348)"/>
+        </svg>
+        <div class="floating-tag top">
+          <div class="tag-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          </div>
+          <div>
+            <div style="font-weight:600">Miles Davis</div>
+            <div style="font-size:11px;color:var(--muted)">Kind of Blue · 1959</div>
+          </div>
+        </div>
+        <div class="floating-tag bot">
+          <div class="tag-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <div>
+            <div style="font-weight:600">180g Audiophile</div>
+            <div style="font-size:11px;color:var(--muted)">премиум-пресс</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span>Jazz</span><span>Rock</span><span>Soul</span><span>Funk</span><span>Classical</span><span>Electronic</span><span>Blues</span><span>Indie</span>
+    <span>Jazz</span><span>Rock</span><span>Soul</span><span>Funk</span><span>Classical</span><span>Electronic</span><span>Blues</span><span>Indie</span>
+  </div>
+</div>
+
+<!-- GENRES -->
+<section id="genres">
+  <div class="container">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-label">Жанры</div>
+        <h2>Найди свой <em>звук</em></h2>
+      </div>
+      <p>Восемь направлений, тысячи исполнителей, миллион настроений. От дымного джаза до синтезаторного минимализма.</p>
+    </div>
+    <div class="genres">
+      <div class="genre-card reveal">
+        <div class="genre-num">01 / Jazz</div>
+        <div class="genre-arrow">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        </div>
+        <div class="genre-name">Jazz &<br>Blues</div>
+      </div>
+      <div class="genre-card reveal">
+        <div class="genre-num">02 / Rock</div>
+        <div class="genre-arrow">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        </div>
+        <div class="genre-name">Classic<br>Rock</div>
+      </div>
+      <div class="genre-card reveal">
+        <div class="genre-num">03 / Soul</div>
+        <div class="genre-arrow">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        </div>
+        <div class="genre-name">Soul &<br>Funk</div>
+      </div>
+      <div class="genre-card reveal">
+        <div class="genre-num">04 / Electronic</div>
+        <div class="genre-arrow">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        </div>
+        <div class="genre-name">Electronic<br>& Ambient</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RELEASES -->
+<section class="releases-section" id="new">
+  <div class="container">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-label">Новинки недели</div>
+        <h2>Свежие <em>релизы</em></h2>
+      </div>
+      <p>Только что прибыли на склад. Ограниченные тиражи, ремастеры и эксклюзивные pressing-и.</p>
+    </div>
+    <div class="releases">
+      <div class="release reveal">
+        <div class="release-cover">
+          <div class="cover-art cover-art-1">
+            <div class="cover-title">Midnight<em>in Harlem</em></div>
+          </div>
+          <svg class="release-vinyl" viewBox="0 0 400 400">
+            <circle cx="200" cy="200" r="195" fill="#0a0705"/>
+            <g stroke="rgba(255,255,255,.05)" fill="none">
+              <circle cx="200" cy="200" r="180"/><circle cx="200" cy="200" r="160"/>
+              <circle cx="200" cy="200" r="140"/><circle cx="200" cy="200" r="120"/>
+            </g>
+            <circle cx="200" cy="200" r="70" fill="#c4452a"/>
+          </svg>
+        </div>
+        <div class="release-info">
+          <div>
+            <div class="release-title">Midnight in Harlem</div>
+            <div class="release-artist">The Soul Collective</div>
+            <div class="release-meta"><span>LP</span><span>Soul</span></div>
+          </div>
+          <div class="release-price">₽ 3 400</div>
+        </div>
+      </div>
+
+      <div class="release reveal">
+        <div class="release-cover">
+          <div class="cover-art cover-art-2">
+            <div class="cover-title">Forest<em>Symphony</em></div>
+          </div>
+          <svg class="release-vinyl" viewBox="0 0 400 400">
+            <circle cx="200" cy="200" r="195" fill="#0a0705"/>
+            <g stroke="rgba(255,255,255,.05)" fill="none">
+              <circle cx="200" cy="200" r="180"/><circle cx="200" cy="200" r="160"/>
+              <circle cx="200" cy="200" r="140"/><circle cx="200" cy="200" r="120"/>
+            </g>
+            <circle cx="200" cy="200" r="70" fill="#2d4a3e"/>
+          </svg>
+        </div>
+        <div class="release-info">
+          <div>
+            <div class="release-title">Forest Symphony</div>
+            <div class="release-artist">A. Lindqvist</div>
+            <div class="release-meta"><span>LP</span><span>Ambient</span></div>
+          </div>
+          <div class="release-price">₽ 2 900</div>
+        </div>
+      </div>
+
+      <div class="release reveal">
+        <div class="release-cover">
+          <div class="cover-art cover-art-3">
+            <div class="cover-title">Golden<em>Hour</em></div>
+          </div>
+          <svg class="release-vinyl" viewBox="0 0 400 400">
+            <circle cx="200" cy="200" r="195" fill="#0a0705"/>
+            <g stroke="rgba(255,255,255,.05)" fill="none">
+              <circle cx="200" cy="200" r="180"/><circle cx="200" cy="200" r="160"/>
+              <circle cx="200" cy="200" r="140"/><circle cx="200" cy="200" r="120"/>
+            </g>
+            <circle cx="200" cy="200" r="70" fill="#8a6842"/>
+          </svg>
+        </div>
+        <div class="release-info">
+          <div>
+            <div class="release-title">Golden Hour</div>
+            <div class="release-artist">M. Rivera</div>
+            <div class="release-meta"><span>LP</span><span>Jazz</span></div>
+          </div>
+          <div class="release-price">₽ 3 800</div>
+        </div>
+      </div>
+
+      <div class="release reveal">
+        <div class="release-cover">
+          <div class="cover-art cover-art-4">
+            <div class="cover-title">Neon<em>Dreams</em></div>
+          </div>
+          <svg class="release-vinyl" viewBox="0 0 400 400">
+            <circle cx="200" cy="200" r="195" fill="#0a0705"/>
+            <g stroke="rgba(255,255,255,.05)" fill="none">
+              <circle cx="200" cy="200" r="180"/><circle cx="200" cy="200" r="160"/>
+              <circle cx="200" cy="200" r="140"/><circle cx="200" cy="200" r="120"/>
+            </g>
+            <circle cx="200" cy="200" r="70" fill="#3a3a5c"/>
+          </svg>
+        </div>
+        <div class="release-info">
+          <div>
+            <div class="release-title">Neon Dreams</div>
+            <div class="release-artist">Kaito</div>
+            <div class="release-meta"><span>LP</span><span>Electronic</span></div>
+          </div>
+          <div class="release-price">₽ 2 600</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="about">
+  <div class="container">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-label">Как это работает</div>
+        <h2>Три шага до <em>идеального</em> звука</h2>
+      </div>
+      <p>Мы делаем покупку винила такой же приятной, как сам процесс прослушивания.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">01</div>
+        <h3>Выбирайте</h3>
+        <p>Каталог с подробными описаниями, фото состояний и аудио-превью. Фильтры по жанру, году, лейблу и состоянию.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">02</div>
+        <h3>Заказывайте</h3>
+        <p>Безопасная оплата, упаковка в фирменный картон с усиленными углами. Доставка по всей России за 2–5 дней.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">03</div>
+        <h3>Слушайте</h3>
+        <p>Опустите иглу — и пусть комната наполнится теплом аналогового звука. Включайтесь в наше сообщество коллекционеров.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section">
+  <div class="container">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-label">Отзывы</div>
+        <h2>Что говорят <em>наши</em> клиенты</h2>
+      </div>
+    </div>
+    <div class="testimonials">
+      <div class="testimonial reveal">
+        <div class="stars">★★★★★</div>
+        <p>Заказываю здесь уже третий год. Упаковка — идеальная, ни одной помятой пластинки. А подборка редких джазовых релизов просто вне конкуренции.</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">А</div>
+          <div>
+            <div class="author-name">Алексей Морозов</div>
+            <div class="author-role">коллекционер, Москва</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial reveal">
+        <div class="stars">★★★★★</div>
+        <p>Нашла здесь переиздание альбома, который искала десять лет. Состояние — как новое, звук кристальный. Спасибо команде GROOVE!</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">Е</div>
+          <div>
+            <div class="author-name">Елена Соколова</div>
+            <div class="author-role">диджей, Санкт-Петербург</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial reveal">
+        <div class="stars">★★★★★</div>
+        <p>Подарил жене пластинку с её любимым альбомом — она расплакалась. Такие эмоции не купить в стриминге. Однозначно рекомендую.</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">Д</div>
+          <div>
+            <div class="author-name">Дмитрий Волков</div>
+            <div class="author-role">архитектор, Казань</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="container">
+    <div class="cta-box reveal">
+      <h2>Будь в курсе<br><em>новых релизов</em></h2>
+      <p>Раз в неделю — подборка свежих поступлений, эксклюзивные предложения и истории из мира винила. Без спама.</p>
+      <form class="cta-form" onsubmit="event.preventDefault();this.querySelector('button').textContent='✓ Отправлено'">
+        <input type="email" placeholder="your@email.com" required>
+        <button type="submit">Подписаться</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo"><span class="logo-dot"></span>GROOVE</a>
+        <p>Магазин виниловых пластинок для тех, кто ценит аналоговый звук и тактильность музыки.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Магазин</h4>
+        <ul>
+          <li><a href="#">Новинки</a></li>
+          <li><a href="#">Бестселлеры</a></li>
+          <li><a href="#">Переиздания</a></li>
+          <li><a href="#">Подарочные карты</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Помощь</h4>
+        <ul>
+          <li><a href="#">Доставка</a></li>
+          <li><a href="#">Возврат</a></li>
+          <li><a href="#">Состояния</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Контакты</h4>
+        <ul>
+          <li><a href="#">hello@groove.ru</a></li>
+          <li><a href="#">+7 (495) 000-00-00</a></li>
+          <li><a href="#">Москва, ул. Звуковая, 7</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 GROOVE. Все права защищены.</div>
+      <div class="socials">
+        <a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3l-.5 3H13v6.95c5.05-.5 9-4.76 9-9.95z"/></svg></a>
+        <a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.3-1.46.72-2.13 1.38C1.35 2.68.93 3.35.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.79.72 1.46 1.38 2.13.67.67 1.34 1.09 2.13 1.39.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.79-.3 1.46-.72 2.13-1.39.67-.67 1.09-1.34 1.39-2.13.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.3-.79-.72-1.46-1.39-2.13C21.32 1.35 20.65.93 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm7.85-10.4a1.44 1.44 0 1 1-2.88 0 1.44 1.44 0 0 1 2.88 0z"/></svg></a>
+        <a href="#"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2c-.3-1-1-1.9-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.5C1.5 4.3.8 5.2.5 6.2 0 8.1 0 12 0 12s0 3.9.5 5.8c.3 1 1 1.9 2.1 2.1 1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5c1.1-.3 1.9-1.1 2.1-2.1.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Reveal on scroll
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:.15});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // Плавный параллакс для плавающих тегов
+  document.addEventListener('mousemove',(e)=>{
+    const x=(e.clientX/window.innerWidth-.5)*20;
+    const y=(e.clientY/window.innerHeight-.5)*20;
+    document.querySelectorAll('.floating-tag').forEach((t,i)=>{
+      const f=i===0?1:-1;
+      t.style.transform=`translate(${x*f*.5}px,${y*f*.5}px)`;
+    });
+  });
+</script>
+</body>
+</html>
